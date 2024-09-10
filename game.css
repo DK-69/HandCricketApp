@@ -1,0 +1,136 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent scrolling */
+}
+
+body {
+    position: relative;
+    padding: 10px;
+    height: 100vh;
+    background-image: url("D:/HAND_CRICKET/game.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Darken with black overlay */
+    z-index: -1; /* Ensure it is behind the content */
+}
+
+.content {
+    position: relative;
+    z-index: 1; /* Content is above the overlay */
+}
+
+
+.navbar {
+    font-family: calibri;
+    padding-left: 15px;
+    padding-right: 15px;
+    justify-content: space-between;
+}
+
+.navdiv {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%; 
+}
+
+li {
+    list-style: none;
+    display: inline-block;
+}
+
+nav {
+    width: 100%;
+}
+
+#players_left {
+    display: flex;
+    align-items: center;
+    font-size: 30px;
+    color: white;
+    font-weight: bold;
+    margin-right: 25px;
+    text-decoration: underline;
+}
+
+#players_left label {
+    margin-right: 10px; /* Space between label and number */
+}
+
+li a {
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 25px;
+}
+
+#score_container {
+    display: flex;
+    align-items: center;
+    font-size: 60px;
+    color: rgb(248, 104, 32);
+    font-weight: bold;
+    margin-left: 50px;
+}
+
+.HandContainer {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+    flex-grow: 1; /* Allow this container to grow */
+}
+
+.csigns {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1px;
+}
+
+.sign1, .sign2, .sign3, .sign4, .sign5, .sign6 {
+    height: 87px;
+    width: 95px;
+    border: solid;
+    border-color: black;
+    border-radius: 35%;
+    border-width: 5px;
+}
+
+#btn1, #btn2, #btn3, #btn4, #btn5, #btn6 {
+    background-color: transparent;
+    border: none;
+}
+
+#score-left, #score-right {
+    font-size: 90px;
+    color: rgb(191, 247, 26);
+    height: 150px;
+    width: 150px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 150px;
+    border: none;
+    border-radius: 20%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Optional: If you need to ensure space for some sections and scroll for others */
+.scrollable-container {
+    overflow: auto;
+    height: calc(100vh - 100px); /* Adjust based on fixed header/footer height */
+}
