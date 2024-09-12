@@ -11,12 +11,14 @@ function setupHeadPage() {
     let no_of_players = 0;
 
     function handleButtonClick() {
-        var numberInput = document.getElementById("numberInput").value;
+        let numberInput = parseInt(document.getElementById("numberInput").value);
 
-        if (numberInput === "") {
+        if (numberInput === "" || isNaN(numberInput)) {
             alert("Please enter a number.");
         } else if (numberInput <= 0 || numberInput > 11) {
-            alert("Please select a number between 1 to 11.");
+            alert("Please select a number between 1 and 11.");
+        } else if (!Number.isInteger(numberInput)) {
+            alert("Please select an integer.");
         } else {
             localStorage.setItem('no_of_players', numberInput);
             window.location.href = "game.html";
@@ -29,45 +31,57 @@ function setupHeadPage() {
 function setupGamePage() {
     let no_of_players = localStorage.getItem('no_of_players');
     let Total_score = 0;
+    let wickets = 0;
     let current_score = 0;
     let write_curr_score = document.getElementById("score");
     let myscore = document.getElementById("score-left");
     let compscore = document.getElementById("score-right");
 
-
     function check_players(no_of_players) {
-        if (no_of_players) {
+        if (no_of_players > 0) {
             document.getElementById("players_count").textContent = no_of_players;
         } else {
-            document.getElementById("players_count").textContent = "GAME OVER " + Total_score;
+            document.getElementById("players_count").textContent = "Game Over";
             setTimeout(() => {
                 window.location.href = "game.html";
-            }, 10000); // 10000 milliseconds = 10 seconds
+            }, 10000); // Wait 10 seconds before restarting
         }
-        
     }
 
     check_players(no_of_players);
 
     window.handleClick = function (num) {
-        const computerChoice = Computerchoice();
-        myscore.value = num;
-        compscore.value = computerChoice;
-        if (computerChoice === num) {
-            Total_score = Total_score + current_score;
-            current_score = 0;
-            write_curr_score.innerHTML = current_score;
-            no_of_players = no_of_players-1;
-            check_players(no_of_players);
-        } else {
-            current_score = current_score + num;
-            write_curr_score.innerHTML = current_score;
+        if (no_of_players > 0) { // Only allow if players are left
+            const computerChoice = Computerchoice();
+            myscore.value = num;
+            compscore.value = computerChoice;
+            const button = document.querySelector(`.sign${num}`);
+
+            if (computerChoice === num) {
+                button.classList.add('red-glow');
+                current_score = 0;
+                wickets += 1;
+                no_of_players = Math.max(no_of_players - 1, 0); // Prevent players from going below 0
+                write_curr_score.innerHTML = Total_score + " - " + wickets;
+                check_players(no_of_players);
+            } else {
+                button.classList.add('green-glow');
+                current_score += num; 
+                Total_score += num;  
+                write_curr_score.innerHTML = Total_score + " - " + wickets;
+            }
+            setTimeout(() => {
+                button.classList.remove('green-glow');
+            }, 500);
+            setTimeout(() => {
+                button.classList.remove('red-glow');
+            }, 1000);
         }
     };
 }
 
 function Computerchoice() {
     const nums = [1, 2, 3, 4, 5, 6];
-    const N = Math.floor(Math.random() * 6);
-    return nums[N];
+    const randomIndex = Math.floor(Math.random() * nums.length);
+    return nums[randomIndex];
 }

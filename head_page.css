@@ -72,3 +72,9 @@ body::before {
     font-style: oblique;
     font-weight: bolder;
 }
+#numberInput{
+    font-size: 30px;
+    color: white;
+    font-style: inherit;
+    
+}
