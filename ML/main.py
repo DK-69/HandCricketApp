@@ -28,6 +28,7 @@ app.add_middleware(
 MONGO_URI = os.getenv("MONGO_URI")  # Don't provide default here
 if not MONGO_URI:
     raise Exception("MONGO_URI is not set in .env file!")
+print("Connected to MongoDB:", players_collection.find_one())
 
 # ✅ Connect to MongoDB Atlas
 client = MongoClient(MONGO_URI)

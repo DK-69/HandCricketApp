@@ -56,7 +56,7 @@ export const getPlayerDetails = async (userId) => {
 };
 
 export const getPredictedMove = async (battingMoves, bowlingMoves,userId,level,isComputerBatting) => {
-  // console.log(battingMoves,bowlingMoves);
+  console.log(battingMoves,bowlingMoves);
   const res = await fetch(`${import.meta.env.VITE_ML}/predict`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -64,7 +64,7 @@ export const getPredictedMove = async (battingMoves, bowlingMoves,userId,level,i
   });
 
   const data = await res.json();
-  // console.log("ML Prediction:", data);
+  console.log("ML Prediction:", data);
   return data.move;
 };
 

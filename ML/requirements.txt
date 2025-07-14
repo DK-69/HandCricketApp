@@ -1,6 +1,7 @@
 fastapi
 uvicorn
-pymongo[srv]
+pymongo
+dnspython
 python-dotenv
 pydantic
 scikit-learn
