@@ -1,19 +1,23 @@
+# ML/main.py
 from pydantic import BaseModel
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import MongoClient
 import random
 import os
-
+import ssl
+import certifi
 from dotenv import load_dotenv
+
 load_dotenv()
 
 from medium_model import predict_medium
 from hard_model import predict_hard
 
+# ✅ Create FastAPI app
 app = FastAPI()
 
-# CORS
+# ✅ Enable CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -22,14 +26,35 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-MONGO_URI = os.getenv("MONGO_URI")
+# ✅ Load MongoDB URI from environment
+MONGO_URI = os.getenv("MONGO_URI")  # Don't provide default here
 if not MONGO_URI:
     raise Exception("MONGO_URI is not set in .env file!")
 
-client = AsyncIOMotorClient(MONGO_URI)
-db = client["handCricketApp"]
-players_collection = db["playerdetails"]
+# ✅ Connect to MongoDB Atlas with TLS/SSL fixes
+try:
+    client = MongoClient(
+        MONGO_URI,
+        tls=True,
+        tlsAllowInvalidCertificates=False,
+        tlsCAFile=certifi.where(),
+        ssl_version=ssl.PROTOCOL_TLSv1_2,
+        connectTimeoutMS=30000,
+        socketTimeoutMS=30000,
+        retryWrites=True,
+        w="majority"
+    )
+    
+    # Test the connection immediately
+    db = client["handCricketApp"]
+    players_collection = db["playerdetails"]
+    print("✅ MongoDB connection test:", players_collection.find_one({"_id": "test"} or {}))
+    
+except Exception as e:
+    print(f"❌ MongoDB connection failed: {str(e)}")
+    raise
 
+# ✅ Input schema
 class MoveInput(BaseModel):
     level: str
     userId: str
@@ -37,11 +62,11 @@ class MoveInput(BaseModel):
     battingMoves: list
     bowlingMoves: list
 
+# ✅ Prediction endpoint
 @app.post("/predict")
-async def predict(data: MoveInput):
+def predict(data: MoveInput):  
     print(f"📩 Predict request | Level: {data.level}, User: {data.userId}")
-
-    player_doc = await players_collection.find_one({"userId": data.userId})
+    player_doc = players_collection.find_one({"userId": data.userId})
 
     if data.level == "medium":
         predicted = predict_medium(data.battingMoves, data.bowlingMoves, data.isComputerBatting)
@@ -54,3 +79,8 @@ async def predict(data: MoveInput):
         print("🔁 Using Random model")
 
     return {"move": int(predicted)}
+
+# Health check endpoint
+@app.get("/")
+def health_check():
+    return {"status": "OK", "mongo_connected": client is not None}
