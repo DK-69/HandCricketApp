@@ -1,6 +1,7 @@
 fastapi
 uvicorn
 motor
+pymongo==4.3.3
 certifi
 python-dotenv
 numpy

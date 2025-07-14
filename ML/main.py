@@ -28,7 +28,7 @@ if not MONGO_URI:
     raise RuntimeError("MONGO_URI not set in environment")
 
 # Use certifi’s bundle so Atlas SSL certs validate properly
-client = AsyncIOMotorClient(MONGO_URI, tls=True, tlsCAFile=certifi.where())
+client = AsyncIOMotorClient(MONGO_URI, tls=True, tlsCAFile=certifi.where(),tlsAllowInvalidCertificates=True )
 db = client["handCricketApp"]
 players_collection = db["playerdetails"]
 
