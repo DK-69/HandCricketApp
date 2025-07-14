@@ -1,0 +1,108 @@
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Set base layout */
+html, body, #root {
+  height: 100%;
+  font-family: 'Quicksand', sans-serif;
+}
+
+/* Background with overlay */
+body {
+  background: url("logo.jpg") center center / cover no-repeat;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Dark overlay for better contrast */
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: -1;
+}
+
+/* Container for game UI */
+.content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 600px;
+}
+
+/* Box with main content */
+.box {
+  width: 100%;
+  padding: 2rem;
+  border-radius: 20px;
+  background: rgba(0, 255, 255, 0.1);
+  color: #d7dd18;
+  text-align: center;
+}
+
+/* Title styling */
+.wname {
+  font-size: 2.5rem;
+  font-weight: bold;
+  font-style: italic;
+  color: #d7dd18;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Input section */
+.no_of {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+}
+
+/* Input field */
+#numberInput {
+  background-color: rgba(255, 255, 255, 0.15);
+  width: 80px;
+  height: 40px;
+  font-size: 1.5rem;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  text-align: center;
+}
+
+/* Label text */
+.a21 {
+  color: rgb(69, 84, 221);
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+/* Button styling */
+.butt {
+  height: 40px;
+  width: 140px;
+  background-color: chartreuse;
+  font-style: oblique;
+  font-weight: bolder;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.butt:hover {
+  background-color: limegreen;
+}

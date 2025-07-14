@@ -1,0 +1,81 @@
+.topscore-wrapper {
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.55);
+  border: 2px solid rgba(0, 0, 0, 0.25);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  max-width: 400px;
+  margin: 0 auto;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+
+.topscore-heading {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.topscore-user {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.topscore-rank {
+  font-weight: bold;
+  color: #555;
+}
+
+.topscore-userid-btn {
+  background: none;
+  border: none;
+  color: #074282;
+  cursor: pointer;
+  font-family: monospace;
+  font-size: 0.95rem;
+}
+
+.topscore-userid-btn:hover {
+  text-decoration: underline;
+}
+
+.topscore-runs {
+  font-weight: bold;
+  color: #444;
+}
+
+.topscore-loading {
+  margin-top: 1rem;
+  text-align: center;
+  color: #666;
+}
+
+.topscore-profile-container {
+  margin-top: 1rem;
+  border-top: 1px solid #ddd;
+  padding-top: 1rem;
+}
+
+.topscore-profile-card {
+  background-color: #ffffff;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.topscore-close-btn {
+  margin-top: 1rem;
+  background-color: #d9534f;
+  color: white;
+  padding: 0.4rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.topscore-close-btn:hover {
+  background-color: #c9302c;
+}

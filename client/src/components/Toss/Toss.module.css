@@ -1,0 +1,274 @@
+/* Toss.module.css */
+/* Toss.module.css */
+.container {
+  background-image: url('/toss.jpg'); /* Note the leading slash */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  /* Keep your other container styles */
+}
+/* Base Styles */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  /* background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.heading {
+  color: #12202e;
+  margin-bottom: 2rem;
+  font-size: 2.5rem;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+  border-bottom: 3px solid #3498db;
+  padding-bottom: 0.5rem;
+}
+
+/* Phase Containers */
+.phaseContainer {
+  width: 100%;
+  max-width: 800px;
+  
+  background: rgba(255, 255, 255, 0.5); /* 50% white transparency */
+  
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  padding: 2rem;
+  margin: 1rem 0;
+  border: 2px solid #e0e0e0;
+}
+
+.phaseTitle {
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+/* Toss Options */
+.tossOptions {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin-top: 2rem;
+}
+
+.tossButton {
+  background: #ffffff;
+  border: 3px solid #3498db;
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 160px;
+}
+
+.tossButton:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+  border-color: #2980b9;
+  background: #f8f9fa;
+}
+
+.tossImage {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin-bottom: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.tossButton:hover .tossImage {
+  transform: scale(1.15) translateY(-5px);
+}
+
+.optionLabel {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #3498db;
+  margin-top: 0.5rem;
+}
+
+/* Choice Options */
+.choiceButtons {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin-top: 2rem;
+}
+
+.choiceButton {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 180px;
+  border: none;
+}
+
+.batChoice {
+  border: 3px solid #2ecc71;
+}
+
+.bowlChoice {
+  border: 3px solid #e74c3c;
+}
+
+.batChoice:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 20px rgba(46, 204, 113, 0.3);
+  border-color: #27ae60;
+  background: #f8f9fa;
+}
+
+.bowlChoice:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 20px rgba(231, 76, 60, 0.3);
+  border-color: #c0392b;
+  background: #f8f9fa;
+}
+
+.choiceImage {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin-bottom: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.choiceButton:hover .choiceImage {
+  transform: scale(1.2) translateY(-8px);
+}
+
+.choiceLabel {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+.batChoice .choiceLabel {
+  color: #2ecc71;
+}
+
+.bowlChoice .choiceLabel {
+  color: #e74c3c;
+}
+
+/* Computer Choice */
+.computerDecision {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.decisionText {
+  font-size: 1.4rem;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+}
+
+.highlight {
+  color: #9b59b6;
+  font-weight: bold;
+}
+
+.computerChoiceDisplay {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: inline-block;
+  border: 3px solid #9b59b6;
+  margin-top: 1rem;
+}
+
+.computerChoiceImage {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.computerChoiceDisplay:hover .computerChoiceImage {
+  transform: scale(1.1);
+}
+
+.container {
+  background-image: url('/toss.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+}
+
+.heading {
+  font-size: 2.5rem;
+  color: #12202e;
+  margin-bottom: 1.5rem;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+  border-bottom: 3px solid #3498db;
+  padding-bottom: 0.5rem;
+}
+
+.roleInfo {
+  font-size: 1.8rem;
+  color: #0a2342; /* deep navy blue for great contrast */
+  margin-bottom: 2rem;
+  font-weight: 600;
+  border: 2px solid #cce5ff; /* soft bluish border */
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.6); /* slight white backdrop for readability */
+}
+
+
+.tossResult {
+  background: rgba(255, 255, 255, 0.6);
+  padding: 1.5rem 2rem;
+  border-radius: 15px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 100%;
+}
+
+.resultLine {
+  font-size: 1.1rem;
+  margin: 0.5rem 0;
+  color: #222;
+}
+
+.waiting {
+  font-size: 1rem;
+  color: #555;
+  font-style: italic;
+  margin-top: 1rem;
+}
+
+.winText {
+  color: green;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+.loseText {
+  color: crimson;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}

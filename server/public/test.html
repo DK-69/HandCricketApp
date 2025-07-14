@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Socket.IO Test</title>
+</head>
+<body>
+  <h1>Socket.IO Connection Test</h1>
+  <p id="status">Connecting...</p>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io("http://localhost:8000");
+
+    socket.on("connect", () => {
+      document.getElementById("status").innerText = "✅ Connected: " + socket.id;
+      console.log("Connected!", socket.id);
+
+      // Test event
+      socket.emit("join-room", "room123");
+    });
+
+    socket.on("disconnect", () => {
+      document.getElementById("status").innerText = "❌ Disconnected";
+    });
+  </script>
+</body>
+</html>

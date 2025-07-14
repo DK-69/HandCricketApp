@@ -1,0 +1,132 @@
+/* google fonts */
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+.jwtWrapper{
+  margin: 20px 40px;
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  background: white;
+  height: 100%;
+}
+.jwtHeaderNav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.thish1{
+  font-size: 1.5em;
+  margin: 0;
+  padding: 0;
+}
+.thish1 a{
+  color: #444;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.authUL {
+  display: flex;
+  align-items: center;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.authUL li {
+  margin-left: 20px;
+}
+
+.authUL li a {
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.8em;
+  display: block;
+  padding: 10px 16px;
+  letter-spacing: 2px;
+  color: #444;
+  text-decoration: none;
+}
+
+
+
+a{
+  text-decoration: none;
+}
+
+.jwtHeaderNav ul{
+  display: flex;
+  align-items: center;
+  list-style-type: none;
+}
+.jwtHeaderNav li{
+  margin-left: 20px;
+}
+.jwtHeaderNav li a{
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.8em;
+  display: block;
+  padding: 10px 16px;
+  letter-spacing: 2px;
+}
+.authButton{
+  border-radius: 36px;
+  background: #FEE996;
+}
+.authFormContainer h2{
+  font-size: 2.4em;
+  font-weight: 900;
+  margin-bottom: 40px;
+}
+.authFormContainer{
+  width: 360px;
+  margin: 0 auto;
+  padding: 30px;
+  box-shadow: 1px 2px 3px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  background: white;
+}
+.authInput{
+  padding: 10px 12px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-size: 1em;
+  width: 100%;
+}
+.authLabel{
+  display: block;
+  margin: 20px 0 10px;
+}
+.authButton{
+  margin-top: 30px;
+  border-radius: 36px;
+  background: #FEE996;
+  border:0;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.8em;
+  display: block;
+  padding: 10px 16px;
+  letter-spacing: 2px;
+}
+.authButtonLogin{
+  margin-top: 30px;
+  border-radius: 36px;
+  border:0;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.8em;
+  display: block;
+  padding: 10px 16px;
+  letter-spacing: 2px;
+}
+.authError{
+  color: #ff0099;
+  margin: 10px 2px;
+  font-size: 0.8em;
+  font-weight: bold;
+}
+
