@@ -1,6 +1,6 @@
 fastapi
 uvicorn
-pymongo[srv]==4.6.3
+motor
 dnspython
 python-dotenv
 pydantic
