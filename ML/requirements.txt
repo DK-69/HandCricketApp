@@ -1,10 +1,8 @@
 fastapi
 uvicorn
-pymongo[srv]==4.6.3
-
-dnspython
+motor
+certifi
 python-dotenv
-pydantic
+numpy
 scikit-learn
 xgboost
-numpy
