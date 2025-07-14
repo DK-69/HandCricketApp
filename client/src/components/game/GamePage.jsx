@@ -33,7 +33,7 @@ const GamePage = () => {
     currentInnings: 'first',
     matchCompleted: false,
     winner: null,
-
+    myRole:role, 
     firstInnings: {
       battingBy: tossDetails.battingFirst,
       score: 0,
@@ -63,7 +63,6 @@ const GamePage = () => {
     glowSign: null,
     glowType: null
   });
-  // console.log(matchState)
 
   const glowTimeout = useRef(null);
 
@@ -101,41 +100,55 @@ const GamePage = () => {
   };
 
   const resetGame = () => {
+    const freshMatchState = {
+      matchId: tossDetails.matchId,
+      mode: tossDetails.gameMode,
+      player1_id: tossDetails.player1_id,
+      player2_id: tossDetails.player2_id,
+
+      tossWinner: tossDetails.tossWinner,
+      battingFirst: tossDetails.battingFirst,
+      bowlingFirst: tossDetails.bowlingFirst,
+      playersPerTeam: tossDetails.no_of_players || 4,
+
+      currentInnings: 'first',
+      matchCompleted: false,
+      winner: null,
+      myRole: role,
+      firstInnings: {
+        battingBy: tossDetails.battingFirst,
+        score: 0,
+        wickets: 0,
+        maxWickets: tossDetails.no_of_players || 4,
+        completed: false,
+        battingMoves: [],
+        bowlingMoves: [],
+      },
+
+      secondInnings: {
+        battingBy: tossDetails.bowlingFirst,
+        score: 0,
+        wickets: 0,
+        maxWickets: tossDetails.no_of_players || 4,
+        target: 0,
+        completed: false,
+        battingMoves: [],
+        bowlingMoves: [],
+      },
+    };
+
+    setMatchState(freshMatchState);
+
     setGameState({
       playersRemaining: maxWickets,
       userChoice: 0,
       computerChoice: 0,
       showModal: false,
       glowSign: null,
-      glowType: null
-    });
-
-    setMatchState({
-      ...matchState,
-      currentInnings: 'first',
-      matchCompleted: false,
-      winner: null,
-      firstInnings: {
-        battingBy: tossDetails.battingFirst,
-        score: 0,
-        wickets: 0,
-        maxWickets: maxWickets,
-        completed: false,
-        battingMoves: [],
-        bowlingMoves: []
-      },
-      secondInnings: {
-        battingBy: tossDetails.bowlingFirst,
-        score: 0,
-        wickets: 0,
-        maxWickets: maxWickets,
-        target: 0,
-        completed: false,
-        battingMoves: [],
-        bowlingMoves: []
-      }
+      glowType: null,
     });
   };
+
 
 
 

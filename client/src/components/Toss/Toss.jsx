@@ -72,9 +72,10 @@ export const Toss = () => {
         actualTossResult: randomToss === 0 ? 'heads' : 'tails',
         gameMode: gameMode,
         matchId: generateMatchId(),
+        myRole: 'user',
       };
       
-
+      print(state);
       if (toss === randomToss) {
         // User won toss
         navigate('/game', {
@@ -84,7 +85,7 @@ export const Toss = () => {
             bowlingFirst: userChoice === 1 ? 'computer' : 'user',
             tossWinner: 'user',
             no_of_players :playersPerTeam,
-            myRole: 'user',
+            
 
           }
         });
@@ -98,7 +99,6 @@ export const Toss = () => {
               bowlingFirst: computerChoice === 1 ? 'user' : 'computer',
               tossWinner: 'computer',
               no_of_players :playersPerTeam,
-              myRole: 'user',
             }
           });
         }, 2000);

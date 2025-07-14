@@ -61,7 +61,7 @@ export const gameLogic = async (num, gameState, matchState, myRole) => {
   const isUserBatting =
     (isFirstInnings && currentInnings.battingBy === myRole) ||
     (!isFirstInnings && currentInnings.battingBy === myRole);
-  // console.log(isFirstInnings, myRole,currentInnings.battingBy)
+
   if (isUserBatting) {
     currentInnings.battingMoves.push(userMove);
     currentInnings.bowlingMoves.push(opponentMove);
@@ -97,27 +97,35 @@ export const gameLogic = async (num, gameState, matchState, myRole) => {
 
     if (userMove === opponentMove) {
       currentInnings.wickets += 1;
-      if (currentInnings.wickets >= currentInnings.maxWickets) {
-        currentInnings.completed = true;
-        if (isFirstInnings) {
-          newMatchState.secondInnings.target = currentInnings.score + 1;
-          newMatchState.currentInnings = "second";
-          newGameState.userChoice = 0;
-          newGameState.computerChoice = 0;
-        } else {
-          newMatchState.matchCompleted = true;
-          newMatchState.winner = myRole === "user" ? "opponent" : "user";
-        }
-      }
     } else {
       currentInnings.score += opponentMove;
-      if (
-        !isFirstInnings &&
-        currentInnings.score >= newMatchState.secondInnings.target
-      ) {
+    }
+
+    if (isFirstInnings) {
+      if (currentInnings.wickets >= currentInnings.maxWickets) {
+        currentInnings.completed = true;
+        newMatchState.secondInnings.target = currentInnings.score + 1;
+        newMatchState.currentInnings = "second";
+        newGameState.userChoice = 0;
+        newGameState.computerChoice = 0;
+      }
+    } else {
+      if (currentInnings.score >= newMatchState.secondInnings.target) {
         currentInnings.completed = true;
         newMatchState.matchCompleted = true;
-        newMatchState.winner = myRole === "user" ? "opponent" : "user";
+        newMatchState.winner = isUserBatting
+          ? myRole
+          : myRole === "user"
+          ? "opponent"
+          : "user";
+      } else if (currentInnings.wickets >= currentInnings.maxWickets) {
+        currentInnings.completed = true;
+        newMatchState.matchCompleted = true;
+        newMatchState.winner = isUserBatting
+          ? myRole === "user"
+            ? "opponent"
+            : "user"
+          : myRole;
       }
     }
   }
