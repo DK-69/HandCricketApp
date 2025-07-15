@@ -98,7 +98,7 @@ export const login_post = async(req, res) => {
     try {
       const user = await User.login(email,password);
       const token = createTokens(user._id);
-      res.cookie('jwt', token, {httpOnly: true, maxAge: 1000*maxAge, sameSite: 'lax',secure: process.env.NODE_ENV === 'production'})
+      res.cookie('jwt', token, {httpOnly: true, maxAge: 1000*maxAge, sameSite: 'None',secure:true})
       res.status(200).json({
         success: true,
         user: {
