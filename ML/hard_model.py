@@ -1,94 +1,118 @@
 import random
-import numpy as np
-from collections import defaultdict
-from xgb_predictor import XGBSequencePredictor
+from collections import defaultdict, deque
 
+class EnhancedMarkov:
+    def __init__(self, max_order=5):
+        self.max_order = max_order
+        self.counts = {
+            order: defaultdict(lambda: defaultdict(int))
+            for order in range(1, max_order + 1)
+        }
+        self.history = deque(maxlen=100)
+        self.patterns = {
+            "repetition": (2, self._repetition),
+            "sequence": (3, self._sequence),
+            "alternation": (4, self._alternation),
+            "cycle": (4, self._cycle),
+            "block_repeat": (6, self._block_repeat),
+            "mirror": (6, self._mirror),
+            "palindrome": (5, self._palindrome),
+            "spike": (3, self._spike),
+            "sandwich": (3, self._sandwich),
+            "fade": (4, self._fade),
+        }
 
-class HardPredictor:
-    def __init__(self):
-        self.user_models = {}  # userId: XGBSequencePredictor
-        self.fallback_model = self._create_fallback_model()
-        self.model_trained_for_user = set()  # Track users whose models were already trained
+    def update(self, move: int):
+        self.history.append(move)
+        hist = list(self.history)
+        for order in range(1, self.max_order + 1):
+            if len(hist) > order:
+                context = tuple(hist[-order - 1:-1])
+                self.counts[order][context][move] += 1
 
-    def _create_fallback_model(self):
-        class FallbackModel:
-            def __init__(self):
-                self.max_order = 4
-                self.counts = {
-                    order: defaultdict(lambda: defaultdict(int))
-                    for order in range(1, self.max_order + 1)
-                }
-                self.history = []
+    def predict(self) -> int:
+        if not self.history:
+            return random.randint(1, 6)
 
-            def update(self, move):
-                self.history.append(move)
-                n = len(self.history)
-                for order in range(1, self.max_order + 1):
-                    if n > order:
-                        context = tuple(self.history[-order-1:-1])
-                        self.counts[order][context][move] += 1
+        for name, (min_len, detector) in self.patterns.items():
+            if len(self.history) >= min_len:
+                context = tuple(self.history)[-min_len:]
+                result = detector(context)
+                if result:
+                    return max(1, min(6, result))
 
-            def predict(self):
-                if not self.history:
-                    return random.randint(1, 6)
+        for order in range(self.max_order, 0, -1):
+            if len(self.history) >= order:
+                context = tuple(self.history)[-order:]
+                if context in self.counts[order]:
+                    moves = self.counts[order][context]
+                    return max(moves, key=moves.get)
 
-                for order in range(self.max_order, 0, -1):
-                    if len(self.history) >= order:
-                        context = tuple(self.history[-order:])
-                        if context in self.counts[order]:
-                            moves = self.counts[order][context]
-                            return max(moves, key=moves.get)
+        return max(set(self.history), key=self.history.count, default=random.randint(1, 6))
 
-                return max(set(self.history), key=self.history.count, default=random.randint(1, 6))
+    # --- Pattern detectors below ---
 
-        return FallbackModel()
+    def _repetition(self, ctx): return ctx[-1] if all(x == ctx[0] for x in ctx) else None
 
-    def predict_hard(self, batting_moves, bowling_moves, is_computer_batting, player_doc):
-        user_id = player_doc.get("userId") if player_doc else "guest"
-        user_moves = bowling_moves if is_computer_batting else batting_moves
-        user_moves = [int(m) for m in user_moves]
+    def _sequence(self, ctx):
+        diffs = [ctx[i+1] - ctx[i] for i in range(len(ctx)-1)]
+        if all(d == diffs[0] for d in diffs): return ctx[-1] + diffs[0]
+        return None
 
-        if user_id not in self.user_models:
-            self.user_models[user_id] = XGBSequencePredictor(seq_length=8)
+    def _alternation(self, ctx): return ctx[0] if ctx[::2] == ctx[1::2][::-1] else None
 
-        tcn_model = self.user_models[user_id]
+    def _cycle(self, ctx):
+        size = len(ctx) // 2
+        if size >= 2 and ctx[:size] == ctx[size:]: return ctx[0]
+        return None
 
-        historical_moves = player_doc.get("historicalMoves", []) if player_doc else []
-        combined_moves = [int(m) for m in historical_moves + user_moves]
+    def _block_repeat(self, ctx):
+        if len(ctx) % 2 == 0:
+            half = len(ctx) // 2
+            return ctx[0] if ctx[:half] == ctx[half:] else None
+        return None
 
-        # Update fallback history with all known moves
-        for move in combined_moves:
-            self.fallback_model.update(move)
+    def _mirror(self, ctx):
+        half = len(ctx) // 2
+        return ctx[half] if ctx[:half] == ctx[-1:half-1:-1] else None
 
-        # ✅ Only train if not already trained for this user
-        if user_id not in self.model_trained_for_user and len(combined_moves) >= tcn_model.min_training_samples:
-            success = tcn_model.train(combined_moves)
-            if success:
-                self.model_trained_for_user.add(user_id)
+    def _palindrome(self, ctx): return ctx[len(ctx)//2] if ctx == ctx[::-1] else None
 
-        # Try to predict from current match
-        predicted_user_move = None
-        if len(user_moves) >= tcn_model.seq_length:
-            predicted_user_move = tcn_model.predict_next(user_moves)
+    def _spike(self, ctx):
+        if len(ctx) != 3: return None
+        a, b, c = ctx
+        if a < b > c or a > b < c: return a
+        return None
 
-        # Try fallback to historical+current combined if needed
-        if predicted_user_move is None and len(combined_moves) >= tcn_model.seq_length:
-            predicted_user_move = tcn_model.predict_next(combined_moves)
+    def _sandwich(self, ctx): return ctx[0] if len(ctx) == 3 and ctx[0] == ctx[2] else None
 
-        # Final fallback if nothing works
-        if predicted_user_move is None:
-            predicted_user_move = self.fallback_model.predict()
+    def _fade(self, ctx):
+        inc = all(ctx[i] < ctx[i+1] for i in range(len(ctx)-2)) and ctx[-2] == ctx[-1]
+        dec = all(ctx[i] > ctx[i+1] for i in range(len(ctx)-2)) and ctx[-2] == ctx[-1]
+        return ctx[-1] if inc or dec else None
 
-        # If computer is batting, return something other than predicted_user_move
-        if is_computer_batting:
-            options = [i for i in range(1, 7) if i != predicted_user_move]
-            return random.choice(options) if options else random.randint(1, 6)
-        else:
-            return predicted_user_move
+# ---------------------- FINAL HARD-LEVEL FUNCTION ----------------------
 
+def predict_hard(batting_moves, bowling_moves, isComputerBatting, player_doc):
+    predictor = EnhancedMarkov()
 
-# Exported function
-hard_predictor = HardPredictor()
+    # Combine historical + current relevant user moves
+    user_moves = []
+    if player_doc:
+        past = player_doc.get("prevBowlingMoves", []) if isComputerBatting else player_doc.get("prevBattingMoves", [])
+        user_moves = past + (bowling_moves if isComputerBatting else batting_moves)
+    else:
+        user_moves = bowling_moves if isComputerBatting else batting_moves
 
-def predict_hard(batting_moves, bowling_moves, is_computer_batting, player_doc):
-    return hard_predictor.predict_hard(batting_moves, bowling_moves, is_computer_batting, player_doc)
+    for move in map(int, user_moves):
+        predictor.update(move)
+
+    predicted_user_move = predictor.predict()
+
+    if isComputerBatting:
+        # AI is batting → avoid user’s likely bowling move
+        options = [i for i in range(1, 7) if i != predicted_user_move]
+        return random.choice(options) if options else random.randint(1, 6)
+    else:
+        # AI is bowling → try to get user out
+        return predicted_user_move

@@ -54,7 +54,7 @@ const GamePage = () => {
       bowlingMoves: [],
     },
   });
-  console.log(matchState)
+  // console.log(matchState)
   const [gameState, setGameState] = useState({
     playersRemaining: maxWickets,
     userChoice: 0,

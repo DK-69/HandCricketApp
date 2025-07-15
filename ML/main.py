@@ -44,7 +44,7 @@ def store_hard_data(data: MoveHistory):
         "prevBattingMoves": data.battingMoves,
         "prevBowlingMoves": data.bowlingMoves,
     }
-    print("🧠 Stored hard data in player_doc")
+    print("🧠 Stored hard data in player_doc", player_doc)
     return {"message": "Hard level data received"}
 
 # Prediction endpoint
@@ -53,11 +53,13 @@ def predict(data: MoveInput):
     print(f"📩 Predict request | Level: {data.level}, User: {data.userId}")
 
     if data.level == "medium":
+        # Medium level prediction using EnhancedMarkov
         predicted = predict_medium(data.battingMoves, data.bowlingMoves, data.isComputerBatting)
 
     elif data.level == "hard":
-        # Prepare historical moves based on current role
+        # Hard level prediction using EnhancedMarkov + player history
         if player_doc:
+            # Prepare historical moves based on current role
             historical_moves = (
                 player_doc.get("prevBowlingMoves", []) if data.isComputerBatting 
                 else player_doc.get("prevBattingMoves", [])
@@ -72,7 +74,7 @@ def predict(data: MoveInput):
         else:
             enhanced_doc = None
 
-
+        # Predict using hard-level model
         predicted = predict_hard(
             data.battingMoves,
             data.bowlingMoves,
@@ -81,6 +83,7 @@ def predict(data: MoveInput):
         )
 
     else:
+        # Random prediction for other levels
         predicted = random.randint(1, 6)
 
     return {"move": int(predicted)}

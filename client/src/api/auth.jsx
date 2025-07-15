@@ -64,7 +64,7 @@ export const getPredictedMove = async (battingMoves, bowlingMoves,userId,level,i
   });
 
   const data = await res.json();
-  console.log("ML Prediction:", data);
+  // console.log("ML Prediction:", data);
   return data.move;
 };
 
