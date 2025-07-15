@@ -73,8 +73,8 @@ export const signup_post = async (req, res) => {
     res.cookie('jwt', token, {
       httpOnly: true,
       maxAge: 1000 * maxAge,
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production'
+      sameSite: 'None',
+      secure: true,
     });
 
     res.status(200).json({
@@ -113,6 +113,12 @@ export const login_post = async(req, res) => {
 };
 
 export const logout_get = (req, res) => {
-  res.cookie('jwt','',{httpOnly: true, maxAge:1 ,sameSite:'lax'});
-  res.redirect('/login');
+  res.cookie('jwt','', {
+    httpOnly: true,
+    maxAge: 1,
+    sameSite: 'None',
+    secure: true
+  });
+  res.status(401).json({ error: 'Unauthorized' });
+
 };

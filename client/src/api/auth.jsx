@@ -31,8 +31,18 @@ export const checkUser = async () => {
     method: 'GET',
     credentials: 'include',
   });
-  return res.json();
+
+  if (res.status === 401) {
+    return { user: null };
+  }
+
+  if (!res.ok) {
+    throw new Error("Failed to check user");
+  }
+
+  return res.json(); // { user: { ... } }
 };
+
 
 // auth.jsx
 export const saveMatch = async (matchState) => {
