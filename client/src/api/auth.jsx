@@ -56,7 +56,7 @@ export const getPlayerDetails = async (userId) => {
 };
 
 export const getPredictedMove = async (battingMoves, bowlingMoves,userId,level,isComputerBatting) => {
-  console.log(battingMoves,bowlingMoves);
+  // console.log(battingMoves,bowlingMoves);
   const res = await fetch(`${import.meta.env.VITE_ML}/predict`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -81,3 +81,22 @@ export const getTopScores = async () => {
   }
 };
 
+export const sendHardLevelData = async (battingMoves, bowlingMoves) => {
+  try {
+    const res = await fetch(`${import.meta.env.VITE_ML}/store-hard-data`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        battingMoves,
+        bowlingMoves,
+      }),
+    });
+    // console.log("sending, ", res);
+    return await res.json(); // response from FastAPI
+  } catch (error) {
+    console.error("❌ Error sending hard level data:", error);
+    return null;
+  }
+};

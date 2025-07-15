@@ -1,10 +1,8 @@
-# ML/main.py
 from pydantic import BaseModel
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
-import certifi           # ← new import
-import os, random
+import random
+import os
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -13,7 +11,7 @@ from hard_model import predict_hard
 
 app = FastAPI()
 
-# CORS
+# CORS setup
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -22,15 +20,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load and verify URI
-MONGO_URI = os.getenv("MONGO_URI")
-if not MONGO_URI:
-    raise RuntimeError("MONGO_URI not set in environment")
+# Global player_doc to simulate database
+player_doc = None
 
-# Use certifi’s bundle so Atlas SSL certs validate properly
-client = AsyncIOMotorClient(MONGO_URI, tls=True, tlsCAFile=certifi.where(),tlsAllowInvalidCertificates=True )
-db = client["handCricketApp"]
-players_collection = db["playerdetails"]
+# Pydantic models
+class MoveHistory(BaseModel):
+    battingMoves: list
+    bowlingMoves: list
 
 class MoveInput(BaseModel):
     level: str
@@ -39,15 +35,51 @@ class MoveInput(BaseModel):
     battingMoves: list
     bowlingMoves: list
 
+# Endpoint to receive and store hard-level data
+@app.post("/store-hard-data")
+def store_hard_data(data: MoveHistory):
+    global player_doc
+    player_doc = {
+        "userId": "guest",
+        "prevBattingMoves": data.battingMoves,
+        "prevBowlingMoves": data.bowlingMoves,
+    }
+    print("🧠 Stored hard data in player_doc")
+    return {"message": "Hard level data received"}
+
+# Prediction endpoint
 @app.post("/predict")
-async def predict(data: MoveInput):
+def predict(data: MoveInput):
     print(f"📩 Predict request | Level: {data.level}, User: {data.userId}")
-    player_doc = await players_collection.find_one({"userId": data.userId})
 
     if data.level == "medium":
         predicted = predict_medium(data.battingMoves, data.bowlingMoves, data.isComputerBatting)
+
     elif data.level == "hard":
-        predicted = predict_hard(data.battingMoves, data.bowlingMoves, data.isComputerBatting, player_doc)
+        # Prepare historical moves based on current role
+        if player_doc:
+            historical_moves = (
+                player_doc.get("prevBowlingMoves", []) if data.isComputerBatting 
+                else player_doc.get("prevBattingMoves", [])
+            )
+            combined = historical_moves + (
+                data.bowlingMoves if data.isComputerBatting else data.battingMoves
+            )
+            enhanced_doc = {
+                "userId": "guest",
+                "historicalMoves": combined
+            }
+        else:
+            enhanced_doc = None
+
+
+        predicted = predict_hard(
+            data.battingMoves,
+            data.bowlingMoves,
+            data.isComputerBatting,
+            enhanced_doc
+        )
+
     else:
         predicted = random.randint(1, 6)
 

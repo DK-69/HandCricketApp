@@ -61,7 +61,7 @@ export const gameLogic = async (num, gameState, matchState, myRole) => {
   const isUserBatting =
     (isFirstInnings && currentInnings.battingBy === myRole) ||
     (!isFirstInnings && currentInnings.battingBy === myRole);
-
+  console.log(isUserBatting, isFirstInnings, currentInnings.battingBy)
   if (isUserBatting) {
     currentInnings.battingMoves.push(userMove);
     currentInnings.bowlingMoves.push(opponentMove);
@@ -77,7 +77,7 @@ export const gameLogic = async (num, gameState, matchState, myRole) => {
           newGameState.computerChoice = 0;
         } else {
           newMatchState.matchCompleted = true;
-          newMatchState.winner = myRole;
+          newMatchState.winner = myRole; //here it means user lost(be dynamic, I would be playing pvp also)
         }
       }
     } else {

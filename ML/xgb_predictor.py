@@ -1,7 +1,8 @@
 import numpy as np
 import xgboost as xgb
 from sklearn.utils import shuffle
-# from sklearn.utils.class_weight import compute_sample_weight  # Optional
+# from sklearn.utils.class_weight import compute_sample_weight
+
 
 class XGBSequencePredictor:
     def __init__(self, seq_length=8):
@@ -11,7 +12,6 @@ class XGBSequencePredictor:
         self.min_training_samples = 30
 
     def preprocess_data(self, sequence):
-        # Clamp values between 1–6
         sequence = [min(6, max(1, int(m))) for m in sequence]
         X, y = [], []
         for i in range(len(sequence) - self.seq_length):
@@ -20,7 +20,7 @@ class XGBSequencePredictor:
         if not X:
             return None, None
         X = np.array(X, dtype=np.float32)
-        y = np.array(y) - 1  # Make labels 0-based for XGBoost
+        y = np.array(y) - 1  # Labels 0-based for XGBoost
         return X, y
 
     def train(self, sequence):
@@ -30,7 +30,6 @@ class XGBSequencePredictor:
 
         X, y = shuffle(X, y)
 
-        # Initialize model
         self.model = xgb.XGBClassifier(
             objective="multi:softprob",
             num_class=6,
@@ -39,10 +38,6 @@ class XGBSequencePredictor:
             n_estimators=50,
             verbosity=0
         )
-
-        # Optionally use sample weights if there's imbalance
-        # weights = compute_sample_weight('balanced', y)
-        # self.model.fit(X, y, sample_weight=weights)
 
         self.model.fit(X, y)
         self.trained = True

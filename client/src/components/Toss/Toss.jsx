@@ -5,6 +5,8 @@ import { UserChoice } from "./UserChoice";
 import { ComputerDecision } from "./ComputerDecision";
 import styles from './Toss.module.css';
 import { checkUser } from "../../api/auth";
+import { getPlayerDetails, sendHardLevelData } from "../../api/auth";
+
 
 export const Toss = () => {
   const navigate = useNavigate();
@@ -65,6 +67,19 @@ export const Toss = () => {
       
       if (!playerId) return;
 
+      if (gameMode === "hard") {
+        // console.log("this is good idea")
+        try {
+          const playerData = await getPlayerDetails(playerId);
+          const battingMoves = playerData?.battingMoves || [];
+          const bowlingMoves = playerData?.bowlingMoves || [];
+          // console.log(battingMoves,bowlingMoves)
+          await sendHardLevelData(battingMoves, bowlingMoves);
+          console.log("✅ Sent hard-level move data to ML");
+        } catch (err) {
+          console.error("❌ Failed to send hard level data:", err);
+        }
+      }
       const state = {
         player1_id: playerId,
         player2_id: "Computer 430",
@@ -74,8 +89,8 @@ export const Toss = () => {
         matchId: generateMatchId(),
         myRole: 'user',
       };
+      console.log(state);
       
-      print(state);
       if (toss === randomToss) {
         // User won toss
         navigate('/game', {

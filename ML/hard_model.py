@@ -6,8 +6,9 @@ from xgb_predictor import XGBSequencePredictor
 
 class HardPredictor:
     def __init__(self):
-        self.user_models = {}  # userId: TCNPredictor
+        self.user_models = {}  # userId: XGBSequencePredictor
         self.fallback_model = self._create_fallback_model()
+        self.model_trained_for_user = set()  # Track users whose models were already trained
 
     def _create_fallback_model(self):
         class FallbackModel:
@@ -55,35 +56,38 @@ class HardPredictor:
         historical_moves = player_doc.get("historicalMoves", []) if player_doc else []
         combined_moves = [int(m) for m in historical_moves + user_moves]
 
+        # Update fallback history with all known moves
         for move in combined_moves:
             self.fallback_model.update(move)
 
-        if len(combined_moves) >= tcn_model.min_training_samples:
-            tcn_model.train(combined_moves)
+        # ✅ Only train if not already trained for this user
+        if user_id not in self.model_trained_for_user and len(combined_moves) >= tcn_model.min_training_samples:
+            success = tcn_model.train(combined_moves)
+            if success:
+                self.model_trained_for_user.add(user_id)
 
-        # Try current game context first
-        predicted_user_move = (
-            tcn_model.predict_next(user_moves)
-            if len(user_moves) >= tcn_model.seq_length
-            else None
-        )
+        # Try to predict from current match
+        predicted_user_move = None
+        if len(user_moves) >= tcn_model.seq_length:
+            predicted_user_move = tcn_model.predict_next(user_moves)
 
-        # Try combined if needed
+        # Try fallback to historical+current combined if needed
         if predicted_user_move is None and len(combined_moves) >= tcn_model.seq_length:
             predicted_user_move = tcn_model.predict_next(combined_moves)
 
-        # Final fallback
+        # Final fallback if nothing works
         if predicted_user_move is None:
             predicted_user_move = self.fallback_model.predict()
 
-        # Return move based on role
+        # If computer is batting, return something other than predicted_user_move
         if is_computer_batting:
             options = [i for i in range(1, 7) if i != predicted_user_move]
             return random.choice(options) if options else random.randint(1, 6)
         else:
             return predicted_user_move
 
-# Exported function for main.py
+
+# Exported function
 hard_predictor = HardPredictor()
 
 def predict_hard(batting_moves, bowling_moves, is_computer_batting, player_doc):

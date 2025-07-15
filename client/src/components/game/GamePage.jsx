@@ -1,11 +1,10 @@
-import { useState,useRef,useNavigate } from "react";
+import { useState,useRef} from "react";
 import HandSign from "./HandSign";
 import ScorecardModal from "./ScorecardModal";
-import { useParams, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import MatchResult from "./MatchResult";
 // import { AuthContext } from "../../context/AuthContext";
 import { gameLogic } from "./GameLogic";
-
 
 
 const GamePage = () => {
@@ -55,6 +54,7 @@ const GamePage = () => {
       bowlingMoves: [],
     },
   });
+  console.log(matchState)
   const [gameState, setGameState] = useState({
     playersRemaining: maxWickets,
     userChoice: 0,
