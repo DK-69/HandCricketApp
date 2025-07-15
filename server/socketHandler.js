@@ -2,15 +2,17 @@
 import { Server } from "socket.io";
 
 const rooms = new Map();
+import dotenv from 'dotenv';
 
 const generateMatchId = () => {
   return `match_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
 };
 
+const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
 export const setupSocket = (server) => {
   const io = new Server(server, {
     cors: {
-      origin: "http://localhost:5173",
+      origin: CLIENT_URL,
       methods: ["GET", "POST"],
       credentials: true,
     },

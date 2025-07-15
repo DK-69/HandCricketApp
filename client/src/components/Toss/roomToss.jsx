@@ -50,7 +50,7 @@ export const RoomToss = () => {
         setBatBowlDecision(choice);
       },
       'navigate-to-game': (data) => {
-        console.log("🚀 Navigating to game:", data);
+        console.log("🚀 Navigating to game:");
         const battingFirst = data.battingFirst;
         const bowlingFirst = data.bowlingFirst;
         const matchData = {

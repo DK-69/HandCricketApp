@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 export const saveMatch = async (req, res) => {
   try {
     const matchData = req.body;
-    console.log("✅ Received match data:", matchData);
+    console.log("✅ Received match data:");
 
     // 1. Save match
     const savedMatch = await MatchDetails.create(matchData);
